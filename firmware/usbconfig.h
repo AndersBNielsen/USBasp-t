@@ -21,15 +21,20 @@ the newest features and options.
 */
 
 /* ---------------------------- Hardware Config ---------------------------- */
+#if defined (__AVR_ATtiny44__) || defined (__AVR_ATtiny84__)
+#define USB_CFG_IOPORTNAME      A
+#define USB_CFG_DMINUS_BIT      1
+#define USB_CFG_DPLUS_BIT       0
+#endif
 
+#ifndef USB_CFG_IOPORTNAME
 #define USB_CFG_IOPORTNAME      B
 /* This is the port where the USB bus is connected. When you configure it to
  * "B", the registers PORTB, PINB and DDRB will be used.
  */
+#endif
 
-#ifndef __AVR_ATtiny85__	
-	#define USB_CFG_DMINUS_BIT      0
-#else
+#ifdef __AVR_ATtiny85__	
 	#define USB_CFG_DMINUS_BIT      3
 #endif
 	
@@ -37,9 +42,7 @@ the newest features and options.
  * This may be any bit in the port.
  */
  
-#ifndef __AVR_ATtiny85__	
-	#define USB_CFG_DPLUS_BIT       1
-#else
+#ifdef __AVR_ATtiny85__	
 	#define USB_CFG_DPLUS_BIT      4
 #endif
 	
