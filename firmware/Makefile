@@ -3,16 +3,21 @@
 #   20061119   Thomas Fischl        original
 #   20061120   Hanns-Konrad Unger   help: and TARGET=atmega48 added
 #	20130628   cpldcpu				TARGET=ATtiny85 added
+#	20181025   Anders B Nielsen				TARGET=ATtiny84 added
 
 # TARGET=atmega8    HFUSE=0xc9  LFUSE=0xef
 # TARGET=atmega48   HFUSE=0xdd  LFUSE=0xff
 # TARGET=at90s2313
 #TARGET=atmega8
-TARGET=attiny85
-HFUSE=0xc9
-LFUSE=0xef
+#TARGET=attiny85
+TARGET=attiny84
+#HFUSE=0xc9
+HFUSE=0xd5
+#LFUSE=0xef
+LFUSE=0xff
 #F_CPU=12000000
-F_CPU=16500000
+#F_CPU=16500000
+F_CPU=16000000
 
 
 # ISP=bsd      PORT=/dev/parport0
