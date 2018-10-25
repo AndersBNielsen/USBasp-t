@@ -1,3 +1,5 @@
+# Note: This is a fork to support Attiny84 too. I will try to leave support for ATTiny85 intact. Original readme below. #
+
 ## micro - USBasp ##
 
 This is a work in progress. 
