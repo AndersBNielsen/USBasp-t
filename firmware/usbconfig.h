@@ -279,4 +279,16 @@ the newest features and options.
 	#define USB_INTR_VECTOR         SIG_PIN_CHANGE
 #endif
 
+#ifdef __AVR_ATtiny84__	
+/* Use PCINT0 instead of INT0 */
+	#define USB_INTR_CFG PCMSK0
+	#define USB_INTR_CFG_SET (1 << PCINT0)
+	#define USB_INTR_CFG_CLR 0
+	#define USB_INTR_ENABLE GIMSK
+	#define USB_INTR_ENABLE_BIT PCIE0
+	#define USB_INTR_PENDING GIFR
+	#define USB_INTR_PENDING_BIT PCIF0
+	#define USB_INTR_VECTOR PCINT0_vect
+#endif
+
 #endif /* __usbconfig_h_included__ */
