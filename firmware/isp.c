@@ -20,9 +20,9 @@ uchar sck_spcr;
 uchar sck_spsr;
 uchar isp_hiaddr;
 
-#ifdef __AVR_ATtiny85__
-	#define spiHWdisable() 
-	#define spiHWenable() 
+#if defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny84__)
+	#define spiHWdisable()
+	#define spiHWenable()
 #else
 	#define spiHWdisable() SPCR = 0
 	void spiHWenable() {
@@ -33,7 +33,7 @@ uchar isp_hiaddr;
 
 void ispSetSCKOption(uchar option) {
 
-#ifndef __AVR_ATtiny85__
+#if !defined(__AVR_ATtiny85__) && !defined(__AVR_ATtiny84__)
 	if (option == USBASP_ISP_SCK_AUTO)
 		option = USBASP_ISP_SCK_375;
 #else
@@ -43,7 +43,7 @@ void ispSetSCKOption(uchar option) {
 #endif
 
 
-#ifndef __AVR_ATtiny85__		
+#if !defined(__AVR_ATtiny85__) && !defined(__AVR_ATtiny84__)
 	if (option >= USBASP_ISP_SCK_93_75) {
 		ispTransmit = ispTransmit_hw;
 		sck_spsr = 0;
@@ -75,7 +75,7 @@ void ispSetSCKOption(uchar option) {
 			break;
 		}
 
-	} else 
+	} else
 #endif
 	{
 		ispTransmit = ispTransmit_sw;
@@ -142,7 +142,7 @@ void ispConnect() {
 	if (ispTransmit == ispTransmit_hw) {
 		spiHWenable();
 	}
-	
+
 	/* Initial extended address value */
 	isp_hiaddr = 0;
 }
@@ -188,7 +188,7 @@ uchar ispTransmit_sw(uchar send_byte) {
 
 	return rec_byte;
 }
-#ifndef __AVR_ATtiny85__		
+#if !defined(__AVR_ATtiny85__) && !defined(__AVR_ATtiny84__)
 uchar ispTransmit_hw(uchar send_byte) {
 
 	SPDR = send_byte;
@@ -212,7 +212,7 @@ uchar ispEnterProgrammingMode() {
 		if (check == 0x53) {
 			return 0;
 		}
-#ifndef __AVR_ATtiny85__		
+#if !defined(__AVR_ATtiny85__) && !defined(__AVR_ATtiny84__)
 		spiHWdisable();
 #endif
 
@@ -223,7 +223,7 @@ uchar ispEnterProgrammingMode() {
 		ISP_OUT &= ~(1 << ISP_RST); /* RST low */
 		ispDelay();
 
-#ifndef __AVR_ATtiny85__		
+#if !defined(__AVR_ATtiny85__) && !defined(__AVR_ATtiny84__)
 		if (ispTransmit == ispTransmit_hw) {
 			spiHWenable();
 		}
@@ -306,7 +306,7 @@ uchar ispWriteFlash(unsigned long address, uchar data, uchar pollmode) {
 uchar ispFlushPage(unsigned long address, uchar pollvalue) {
 
 	ispUpdateExtended(address);
-	
+
 	ispTransmit(0x4C);
 	ispTransmit(address >> 9);
 	ispTransmit(address >> 1);

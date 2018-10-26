@@ -46,7 +46,7 @@ uchar usbFunctionSetup(uchar data[8]) {
 	if (data[1] == USBASP_FUNC_CONNECT) {
 
 		/* set SCK speed */
-#ifndef __AVR_ATtiny85__		
+#if !defined(__AVR_ATtiny85__) && !defined(__AVR_ATtiny84__)
 		if ((PINC & (1 << PC2)) == 0) {
 			ispSetSCKOption(USBASP_ISP_SCK_8);
 		} else {
@@ -149,7 +149,7 @@ uchar usbFunctionSetup(uchar data[8]) {
 
 		clockWait(16);
 		tpi_init();
-	
+
 	} else if (data[1] == USBASP_FUNC_TPI_DISCONNECT) {
 
 		tpi_send_byte(TPI_OP_SSTCS(TPISR));
@@ -169,26 +169,26 @@ uchar usbFunctionSetup(uchar data[8]) {
 		ISP_OUT &= ~((1 << ISP_RST) | (1 << ISP_SCK) | (1 << ISP_MOSI));
 
 		ledRedOff();
-	
+
 	} else if (data[1] == USBASP_FUNC_TPI_RAWREAD) {
 		replyBuffer[0] = tpi_recv_byte();
 		len = 1;
-	
+
 	} else if (data[1] == USBASP_FUNC_TPI_RAWWRITE) {
 		tpi_send_byte(data[2]);
-	
+
 	} else if (data[1] == USBASP_FUNC_TPI_READBLOCK) {
 		prog_address = (data[3] << 8) | data[2];
 		prog_nbytes = (data[7] << 8) | data[6];
 		prog_state = PROG_STATE_TPI_READ;
 		len = 0xff; /* multiple in */
-	
+
 	} else if (data[1] == USBASP_FUNC_TPI_WRITEBLOCK) {
 		prog_address = (data[3] << 8) | data[2];
 		prog_nbytes = (data[7] << 8) | data[6];
 		prog_state = PROG_STATE_TPI_WRITE;
 		len = 0xff; /* multiple out */
-	
+
 	} else if (data[1] == USBASP_FUNC_GETCAPABILITIES) {
 		replyBuffer[0] = USBASP_CAP_0_TPI;
 		replyBuffer[1] = 0;
@@ -305,7 +305,7 @@ uchar usbFunctionWrite(uchar *data, uchar len) {
 	return retVal;
 }
 
- #ifdef __AVR_ATtiny85__	
+ #ifdef __AVR_ATtiny85__
 /* ------------------------------------------------------------------------- */
 /* ------------------------ Oscillator Calibration ------------------------- */
 /* ------------------------------------------------------------------------- */
@@ -348,7 +348,7 @@ int         x, optimumDev, targetValue = (unsigned)(1499 * (double)F_CPU / 10.5e
             optimumValue = OSCCAL;
         }
     }
-    OSCCAL = optimumValue; 
+    OSCCAL = optimumValue;
 }
 
 void usbEventResetReady(void)
@@ -366,18 +366,18 @@ int main(void) {
 	uchar   calibrationValue;
 
 	/* no pullups on USB and ISP pins */
-#ifndef __AVR_ATtiny85__		
+#if !defined(__AVR_ATtiny85__) && !defined(__AVR_ATtiny84__)
 	PORTD = 0;
-#endif	
+#endif
 	PORTB = 0;
 	/* all outputs except PD2 = INT0 */
-#ifndef __AVR_ATtiny85__		
+#if !defined(__AVR_ATtiny85__) && !defined(__AVR_ATtiny84__)
 	DDRD = ~(1 << 2);
 
 	/* output SE0 for USB reset */
 	DDRB = ~0;
 	j = 0;
-	
+
 	/* USB Reset by device only required on Watchdog Reset */
 	while (--j) {
 		i = 0;
@@ -385,24 +385,24 @@ int main(void) {
 		while (--i)
 			;
 	}
-	
+
 #else
     calibrationValue = eeprom_read_byte(0); /* calibration value from last time */
     if(calibrationValue != 0xff){
         OSCCAL = calibrationValue;
     }
-    
+
     usbDeviceDisconnect();
     for(i=0;i<20;i++){  /* 300 ms disconnect */
         _delay_ms(15);
     }
     usbDeviceConnect();
-#endif	
-	
+#endif
+
 	/* all USB and ISP pins inputs */
 	DDRB = 0;
 
-#ifndef __AVR_ATtiny85__	
+#if !defined(__AVR_ATtiny85__) && !defined(__AVR_ATtiny84__)
 	/* all inputs except PC0, PC1 */
 	DDRC = 0x03;
 	PORTC = 0xfe;
@@ -421,4 +421,3 @@ int main(void) {
 	}
 	return 0;
 }
-

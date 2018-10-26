@@ -16,16 +16,16 @@
 #define	uchar	unsigned char
 #endif
 
-#ifdef __AVR_ATtiny85__
+#ifdef __AVR_ATtiny84__
 
-	#define	ISP_OUT   PORTB
-	#define ISP_IN    PINB
-	#define ISP_DDR   DDRB
-	#define ISP_RST   PB5		
-	#define ISP_MOSI  PB0		
-	#define ISP_MISO  PB1		
-	#define ISP_SCK   PB2		
-	
+	#define	ISP_OUT   PORTA
+	#define ISP_IN    PINA
+	#define ISP_DDR   DDRA
+	#define ISP_RST   PA7
+	#define ISP_MOSI  PA6
+	#define ISP_MISO  PA5
+	#define ISP_SCK   PA4
+
 #else
 
 	#define	ISP_OUT   PORTB

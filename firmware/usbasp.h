@@ -62,16 +62,12 @@
 #define USBASP_ISP_SCK_1500   12  /* 1.5 MHz   */
 
 /* macros for gpio functions */
-#ifdef __AVR_ATtiny85__		
+#if defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny84__)
 // no leds on attiny85
-	#define ledRedOn()    
-	#define ledRedOff()   
-	#define ledGreenOn()  
+	#define ledRedOn()
+	#define ledRedOff()
+	#define ledGreenOn()
 	#define ledGreenOff() 
-	#define ledRedOn()    PORTC &= ~(1 << PC1)
-	#define ledRedOff()   PORTC |= (1 << PC1)
-	#define ledGreenOn()  PORTC &= ~(1 << PC0)
-	#define ledGreenOff() PORTC |= (1 << PC0)
 #else
 	#define ledRedOn()    PORTC &= ~(1 << PC1)
 	#define ledRedOff()   PORTC |= (1 << PC1)
