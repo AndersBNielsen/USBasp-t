@@ -21,7 +21,7 @@
 	#define	ISP_OUT   PORTA
 	#define ISP_IN    PINA
 	#define ISP_DDR   DDRA
-	#define ISP_RST   PA7
+	#define ISP_RST   PA3
 	#define ISP_MOSI  PA6
 	#define ISP_MISO  PA5
 	#define ISP_SCK   PA4

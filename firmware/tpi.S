@@ -1,26 +1,42 @@
 /**
  * \brief Size-optimized code for TPI
  * \file tpi.s
- * \author S³awomir Fraœ
+ * \author Sï¿½awomir Fraï¿½
  */
 #include <avr/io.h>
 #include "tpi_defs.h"
 
-
+#ifdef __AVR_ATtiny84__
+#define TPI_CLK_PORT PORTA
+#define TPI_CLK_DDR DDRA
+#define TPI_DATAOUT_PORT PORTA
+#define TPI_DATAOUT_DDR DDRA
+#else
 #define TPI_CLK_PORT PORTB
 #define TPI_CLK_DDR DDRB
 #define TPI_DATAOUT_PORT PORTB
 #define TPI_DATAOUT_DDR DDRB
-
-#ifdef __AVR_ATtiny85__
-#	define TPI_DATAOUT_BIT 0
-#	define TPI_CLK_BIT 2
-#else
-#	define TPI_DATAOUT_BIT 3
-#	define TPI_CLK_BIT 5
 #endif
 
+#if (defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny84__))
+  #ifdef __AVR_ATtiny84__
+  #	define TPI_DATAOUT_BIT 5
+  #	define TPI_CLK_BIT 4
+  #else
+  #	define TPI_DATAOUT_BIT 3
+  #	define TPI_CLK_BIT 5
+  #endif
+#else
+#	define TPI_DATAOUT_BIT 0
+#	define TPI_CLK_BIT 2
+#endif
+
+#ifdef __AVR_ATtiny84__
+#define TPI_DATAIN_PIN PINA
+#else
 #define TPI_DATAIN_PIN PINB
+#endif
+
 
 #ifdef TPI_WITH_OPTO
 #	define TPI_DATAIN_DDR DDRB
@@ -188,7 +204,7 @@ tpi_recv_byte:
 	brne 1b
 	/* send hi */
 	rjmp tpi_bit_h
-	
+
 // ----
 .tpi_recv_found_start:
 	/* recv 8bits(+calc.parity) */
@@ -222,7 +238,7 @@ tpi_read_block:
 	mov r23, r20
 	/* set PR */
 	rcall tpi_pr_update
-	/* read data */	
+	/* read data */
 .tpi_read_loop:
 		ldi r24, TPI_OP_SLD_INC
 		rcall tpi_send_byte

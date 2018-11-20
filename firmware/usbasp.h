@@ -63,11 +63,18 @@
 
 /* macros for gpio functions */
 #if defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny84__)
+	#if defined(__AVR_ATtiny85__)
 // no leds on attiny85
 	#define ledRedOn()
 	#define ledRedOff()
 	#define ledGreenOn()
 	#define ledGreenOff() 
+	#else
+	#define ledRedOn()    PORTA &= ~(1 << 7)
+	#define ledRedOff()   PORTA |= (1 << 7)
+	#define ledGreenOn()
+	#define ledGreenOff() 	
+	#endif
 #else
 	#define ledRedOn()    PORTC &= ~(1 << PC1)
 	#define ledRedOff()   PORTC |= (1 << PC1)
